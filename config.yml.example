@@ -1,0 +1,25 @@
+---
+kiosk_version: "v1.0.6"
+force_install: false
+
+dashboard_configs:
+  inventory_hostname_1:
+    dashboard_url: "https://play.grafana.org"
+    dashboard_login: "anon"
+    dashboard_user: ""
+    dashboard_pass: ""
+  inventory_hostname_2:
+    dashboard_url: "https://play.grafana.org"
+    dashboard_login: "anon"
+    dashboard_user: ""
+    dashboard_pass: ""
+  inventory_hostname_3: 
+    dashboard_url: "https://play.grafana.org"
+    dashboard_login: "anon"
+    dashboard_user: ""
+    dashboard_pass: ""
+  inventory_hostname_4:
+    dashboard_url: "https://play.grafana.org"
+    dashboard_login: "anon"
+    dashboard_user: ""
+    dashboard_pass: ""
