@@ -1,0 +1,5 @@
+[videowall_pi]
+inventory_hostname_1 ansible_user=pi
+inventory_hostname_2 ansible_user=pi
+inventory_hostname_3 ansible_user=pi
+inventory_hostname_4 ansible_user=pi
