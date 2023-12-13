@@ -1,0 +1,38 @@
+---
+- name: Video Settings | Change Video Group to CEA
+  ansible.builtin.lineinfile:
+    path: /boot/config.txt
+    search_string: 'hdmi_group'
+    line: 'hdmi_group=1'
+
+- name: Video Settings | Change Video output format to 1080P
+  ansible.builtin.lineinfile:
+    path: /boot/config.txt
+    search_string: 'hdmi_mode'
+    line: 'hdmi_mode=16'
+
+- name: Video Settings | Check if Videomode is already configured in cmdline.txt
+  ansible.builtin.shell: "grep -i 'video=HDMI-A-1' /boot/cmdline.txt"
+  register: videomode_present
+
+- name: Video Settings | Change Video output format to 1080P in cmdline.txt
+  ansible.builtin.lineinfile:
+    path: /boot/cmdline.txt
+    regex: '^(console(.*)$)'
+    backrefs: yes
+    line: '\1 video=HDMI-A-1:1920x1080M@60'
+  when: videomode_present is not changed
+  register: cmdline
+
+- name: Video Settings | Disable Screen blanking
+  ansible.builtin.copy:
+    src: files/wayfire.ini
+    dest: /home/pi/.config/wayfire.ini
+    owner: pi
+    group: pi
+    mode:  0644
+  register: wayfire
+
+- name: Video Settings | Reboot if changes where made
+  ansible.builtin.reboot:
+  when: cmdline.changed or wayfire.changed
