@@ -1,0 +1,56 @@
+---
+- name: Grafana Kiosk | Download and install requirements
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "unclutter"
+    - "chromium-browser"
+
+- name: Grafana Kiosk | Check if Grafana Kiosk is already installed
+  stat:
+    path: /usr/bin/grafana-kiosk
+  register: kiosk_installed
+
+- name: Grafana Kiosk | Download Grafana Kiosk Zip
+  ansible.builtin.get_url:
+    url: https://github.com/grafana/grafana-kiosk/releases/download/{{ kiosk_version }}/grafana-kiosk-{{ kiosk_version }}.tar.gz
+    dest: /tmp/grafana-kiosk.tar.gz
+    mode: '0775'
+  when: not kiosk_installed.stat.exists or force_install
+
+- name: Grafana Kiosk | Untar Grafana Kiosk
+  ansible.builtin.unarchive:
+    src: /tmp/grafana-kiosk.tar.gz
+    remote_src: yes
+    dest: /tmp/
+    mode: '0775'
+  when: not kiosk_installed.stat.exists or force_install
+
+- name: Grafana Kiosk | Copy Grafana Kiosk
+  ansible.builtin.copy:
+    src: "/tmp/grafana-kiosk-{{ kiosk_version }}/grafana-kiosk.linux.arm64"
+    dest: /usr/bin/grafana-kiosk
+    remote_src: yes
+    mode: '0775'
+  when: not kiosk_installed.stat.exists or force_install
+
+- name: Grafana Kiosk | Copy Systemd files
+  ansible.builtin.copy:
+    src: files/grafana-kiosk.service
+    dest: /etc/systemd/system/grafana-kiosk.service
+    mode: '0644'
+  when: not kiosk_installed.stat.exists or force_install
+
+- name: Grafana Kiosk | Copy Config files
+  ansible.builtin.template:
+    src: templates/grafana-kiosk.yaml.j2
+    dest: /home/pi/.config/grafana-kiosk.yaml
+    mode: '0644'
+
+- name: Grafana-Kiosk | Start and Enable Kiosk
+  ansible.builtin.systemd_service:
+    name: grafana-kiosk
+    state: restarted
+    enabled: true
+    daemon_reload: true
