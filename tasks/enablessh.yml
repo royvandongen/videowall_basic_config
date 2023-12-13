@@ -1,0 +1,6 @@
+---
+- name: Enable SSH | Enable SSH Persistent Access
+  ansible.builtin.systemd:
+    name: ssh
+    state: started
+    enabled: yes
