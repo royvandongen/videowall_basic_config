@@ -1,0 +1,30 @@
+---
+- name: Configure Videowall Kiosk Pi's
+  hosts: videowall_pi
+  become: true
+
+  tasks:
+    - name: Include Configfile
+      ansible.builtin.include_vars: config.yml
+
+    - name: Install Variables
+      ansible.builtin.set_fact:
+        dashboard_url: '{{ dashboard_configs[inventory_hostname]["dashboard_url"] }}'
+        dashboard_login: '{{ dashboard_configs[inventory_hostname]["dashboard_login"] }}'
+        dashboard_user: '{{ dashboard_configs[inventory_hostname]["dashboard_user"] }}'
+        dashboard_pass: '{{ dashboard_configs[inventory_hostname]["dashboard_pass"] }}'
+
+    - name: Base Apps
+      ansible.builtin.import_tasks: tasks/baseapps.yml
+
+    - name: Enable Persistent SSH
+      ansible.builtin.import_tasks: tasks/enablessh.yml
+
+    - name: Change Video Output
+      ansible.builtin.import_tasks: tasks/videooutput.yml
+
+    - name: Install Graphical Desktop
+      ansible.builtin.import_tasks: tasks/desktopenvironment.yml
+
+    - name: Download Grafana Kiosk
+      ansible.builtin.import_tasks: tasks/grafanakiosk.yml
