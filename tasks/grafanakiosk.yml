@@ -6,6 +6,7 @@
   with_items:
     - "unclutter"
     - "chromium-browser"
+    - "rng-tools"
 
 - name: Grafana Kiosk | Check if Grafana Kiosk is already installed
   stat:
