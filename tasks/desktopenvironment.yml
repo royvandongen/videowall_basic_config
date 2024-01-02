@@ -8,3 +8,13 @@
   with_items:
     - xserver-xorg
     - raspberrypi-ui-mods
+
+- name: Schedule nightly reboot
+  ansible.builtin.cron:
+    name: "Nightly Reboot"
+    weekday: "*"
+    minute: "0"
+    hour: "02"
+    user: root
+    job: "shutdown -r now"
+    cron_file: autoreboot
