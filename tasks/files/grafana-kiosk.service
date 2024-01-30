@@ -9,6 +9,9 @@ User=pi
 Environment="DISPLAY=:0"
 Environment="XAUTHORITY=/home/pi/.Xauthority"
 
+# Wait 10 seconds on boot for slow Raspi Startup, Otherwise display is not found
+ExecStartPre=/bin/sleep 10
+
 # Disable screensaver and monitor standby
 ExecStartPre=xset s off
 ExecStartPre=xset -dpms
